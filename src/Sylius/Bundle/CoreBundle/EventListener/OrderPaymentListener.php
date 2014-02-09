@@ -47,6 +47,8 @@ class OrderPaymentListener
      * Constructor.
      *
      * @param PaymentProcessorInterface $paymentProcessor
+     * @param EntityRepository          $orderRepository
+     * @param EventDispatcherInterface  $dispatcher
      */
     public function __construct(PaymentProcessorInterface $paymentProcessor, EntityRepository $orderRepository, EventDispatcherInterface $dispatcher)
     {
@@ -92,6 +94,7 @@ class OrderPaymentListener
 
         if (PaymentInterface::STATE_COMPLETED === $payment->getState()) {
             $this->dispatcher->dispatch(SyliusOrderEvents::PRE_PAY, new GenericEvent($order, $event->getArguments()));
+            $this->dispatcher->dispatch(SyliusOrderEvents::POST_PAY, new GenericEvent($order, $event->getArguments()));
         }
     }
 }
